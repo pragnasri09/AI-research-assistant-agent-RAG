@@ -1,9 +1,10 @@
 import React from 'react';
 import { BookOpen, History, Search } from 'lucide-react';
 
-export function Navbar({ activeTab, onSelectTab, historyCount = 0, health }) {
+export function Navbar({ activeTab, onSelectTab, historyCount = 0, health, backendUrl }) {
   const isHealthy = health?.status === 'healthy';
   const isTavily = health?.tavily_configured;
+  const currentUrl = backendUrl || 'http://127.0.0.1:8000';
 
   return (
     <header className="navbar">
@@ -47,7 +48,7 @@ export function Navbar({ activeTab, onSelectTab, historyCount = 0, health }) {
             title={
               isHealthy
                 ? `FastAPI Backend online (v${health.version}) - Mode: ${health.search_mode}`
-                : 'Backend is unreachable at http://127.0.0.1:8000'
+                : `Backend is unreachable at ${currentUrl}`
             }
           >
             <span className={`status-dot ${isHealthy ? '' : 'offline'}`} />

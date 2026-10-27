@@ -34,6 +34,7 @@ venv/
 .env
 .env.*
 !.env.example
+!.env.production
 
 # Frontend dependencies and build files
 

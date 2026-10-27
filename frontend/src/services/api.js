@@ -2,7 +2,29 @@
  * API service for communicating with the FastAPI AI Research Assistant backend.
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+const resolveBaseUrl = () => {
+  // 1. Explicit environment variable: VITE_API_BASE_URL (or VITE_API_URL fallback)
+  const envUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL;
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== '') {
+    return envUrl.trim().replace(/\/+$/, '');
+  }
+
+  // 2. Deployed production fallback:
+  // When running in production (Vercel) or on any non-local domain, default to the deployed Render backend
+  if (
+    import.meta.env.PROD ||
+    (typeof window !== 'undefined' &&
+      window.location.hostname !== 'localhost' &&
+      window.location.hostname !== '127.0.0.1')
+  ) {
+    return 'https://ai-research-assistant-backend-shcr.onrender.com';
+  }
+
+  // 3. Local development fallback only
+  return 'http://127.0.0.1:8000';
+};
+
+const BASE_URL = resolveBaseUrl();
 
 class ApiError extends Error {
   constructor(message, status, data) {
@@ -57,6 +79,13 @@ async function request(endpoint, options = {}) {
 }
 
 export const api = {
+  /**
+   * Get resolved base URL
+   */
+  getBaseUrl() {
+    return BASE_URL;
+  },
+
   /**
    * Health check endpoint
    */

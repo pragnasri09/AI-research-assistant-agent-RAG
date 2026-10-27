@@ -208,6 +208,7 @@ export default function App() {
         }}
         historyCount={history.length}
         health={health}
+        backendUrl={api.getBaseUrl()}
       />
 
       <main className="content-container" style={{ flex: 1, paddingBottom: '48px' }}>
@@ -268,7 +269,7 @@ export default function App() {
             <strong>AI Research Assistant Agent</strong> &bull; LangGraph Autonomous Pipeline &bull; Chroma RAG
           </div>
           <div>
-            Backend: {health?.status === 'healthy' ? 'http://127.0.0.1:8000' : 'Disconnected'}
+            Backend: {health?.status === 'healthy' ? api.getBaseUrl() : 'Disconnected'}
           </div>
         </div>
       </footer>

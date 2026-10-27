@@ -1,3 +1,4 @@
+import os
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -28,10 +29,26 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Enable CORS for frontend Vite dev server & production
+# Enable CORS for frontend Vite dev server & deployed Vercel frontend
+allowed_origins = [
+    "https://frontend-beige-two-53.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+cors_origins_env = os.getenv("ALLOWED_ORIGINS", "")
+if cors_origins_env:
+    for o in cors_origins_env.split(","):
+        o_clean = o.strip()
+        if o_clean and o_clean not in allowed_origins:
+            allowed_origins.append(o_clean)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
